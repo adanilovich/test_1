@@ -1,0 +1,44 @@
+version: '3.7'
+services:
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_DATABASE: php_cms
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - 3306:3306
+    restart: unless-stopped
+    networks:
+      - app_network
+
+  migration:
+    image: imega/mysql-client
+    command: sh -c "mysql --host=mysql --user=root --password=test --database=php_cms <./php_cms.sql"
+    working_dir: /var
+    volumes:
+      - ./:/var/
+    depends_on:
+      - mysql
+    networks:
+      - app_network
+
+  vulnerable_app:
+    build:
+      dockerfile: ./Dockerfile
+    restart: always
+    depends_on:
+      - migration
+    working_dir: /var/www/html
+    volumes:
+      - ./CMSsite-master/:/root/
+    ports:
+     - 80:80
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
