@@ -9,6 +9,6 @@ make up
 ## Detailed Usage
 
 ```
-▶ ./subdbrut -h
+▶ ./exploit
 Usage: ./exploit [-h <ip address>] [-d <domain>]
 ```
